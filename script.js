@@ -1,6 +1,9 @@
 // http://api.open-notify.org/iss-now.json
 
 let kutu1Elemani = document.querySelector('#kutu1');
+let haritaOlusturuldu = false;
+var map;
+var marker;
 
 setInterval(issHaritaGuncelle, 5000)
 
@@ -12,11 +15,21 @@ function issHaritaGuncelle() {
             let boylam = veri.iss_position.longitude
 
             kutu1Elemani.textContent = enlem + ',' + boylam
-            var map = L.map('map').setView([parseInt(enlem), parseInt(boylam)], 3);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-            var marker = L.marker([parseInt(enlem), parseInt(boylam)]).addTo(map);
+
+            if( haritaOlusturuldu === false ){
+                map = L.map('map').setView([parseInt(enlem), parseInt(boylam)], 2);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+
+                haritaOlusturuldu = true;
+            }
+
+            if(marker){
+                marker.remove()
+                marker = L.marker([parseInt(enlem), parseInt(boylam)]).addTo(map);
+                map.panTo([parseInt(enlem), parseInt(boylam)], animate=true);
+            }
         })
 }
